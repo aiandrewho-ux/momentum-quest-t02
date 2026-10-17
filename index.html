@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Momentum Quest – T02</title>
+<title>Momentum Quest – T04</title>
 <style>
 :root{--bg:#f7f6f2;--sf:#fff;--tx:#28251d;--mu:#6b6a65;--ac:#01696f;--ac2:#0c4e54;--bd:#e0ddd6;--ok:#437a22}
 [data-t=dark]{--bg:#171614;--sf:#1f1e1c;--tx:#e6e5e2;--mu:#9a9993;--ac:#4f98a3;--ac2:#6bb0ba;--bd:#33322f;--ok:#6daa45}
@@ -25,24 +25,30 @@ textarea,select,input[type=number]{width:100%;font:inherit;padding:10px;border-r
 h2{font-size:16px;margin-bottom:6px}.hide{display:none}
 </style></head><body><main>
 <header><div><h1>Momentum Quest</h1><small id="xp"></small></div><button id="th" aria-label="Toggle dark mode">Theme</button></header>
-<div class="card"><small>MISSION · T02 · Core build</small><h2 style="font-size:20px;margin-top:4px">Finish flagship FAQ</h2>
+<div class="card"><small>MISSION · <span id="mid"></span> · <span id="mws"></span></small><h2 style="font-size:20px;margin-top:4px" id="mti"></h2>
 <div class="bar"><i id="pb"></i></div><small id="pt"></small>
-<p class="mu" style="margin-top:8px">Prerequisite: Andrew's final wording and business policy. Priority: ASAP when prerequisites are met; release gate.</p></div>
+<p class="mu" style="margin-top:8px" id="mpr"></p></div>
 <div class="card" id="now"></div>
+<div class="card"><h2>Completed tasks</h2><small id="cn"></small><ol id="cl"></ol></div>
 <div class="card"><h2>All steps</h2><ol id="ls"></ol></div>
-<div class="card hide fin" id="fin"><h2>T02 complete</h2><p>Every final question has a complete answer. Send the link.</p></div>
+<div class="card hide fin" id="fin"><h2 id="fh"></h2><p id="fp"></p></div>
 <div class="card"><h2>Timer length</h2><select id="pre"></select>
 <p class="mu" style="margin-top:8px">Presets are starting points. Change them to match how long you actually stay focused.</p></div>
 <div class="card"><h2>Your tweaks</h2><textarea id="nt" rows="3" placeholder="What felt too long, too big or too boring? Paste it to Perplexity to improve this app."></textarea></div>
 </main>
 <script>
+const TASK={id:"T04",ws:"Core build",title:"Flagship conversion and copy",
+prereq:"Prerequisite: Backup + verified scope, pricing and proof. Priority: ASAP when prerequisites are met; no month or quarter release gate.",
+finish:"The page is accurate and easy to use on a phone. Update, then ask Perplexity to check the live page."};
+const COMPLETED=[{id:"T01",t:"Fresh baseline"},{id:"T02",t:"Finish flagship FAQ"},{id:"T03",t:"Approve and install schema"}];
+const CORE_TOTAL=50;
 const steps=[
-{t:"Open the money page in Elementor",m:5,d:"Done when: the page is open in the Elementor editor."},
-{t:"Finish any cut-off FAQ answer",m:20,d:"Done when: no answer ends mid-sentence."},
-{t:"Remove editing duplicates or give them different questions",m:20,d:"Done when: no two questions are the same."},
-{t:"Make the booking advice match the footer",m:15,d:"Done when: booking advice and footer say the same thing."},
-{t:"Update the page and send the link",m:10,d:"Done when: page is updated and the link is sent."}];
-const K='mq_t02',S=JSON.parse(localStorage.getItem(K)||'{"done":[],"xp":0,"nt":"","dark":0,"blocked":{}}');
+{t:"Make a backup first",m:10,d:"Done when: a backup of the money page exists and you know where to restore it from."},
+{t:"Ask Claude to tidy your page using your real prices, services and photos",m:20,d:"Done when: Claude's tidied draft uses only your real prices, services and photos."},
+{t:"Check every promise yourself",m:20,d:"Done when: every price, service and promise on the draft is true and you have ticked it off."},
+{t:"Add the approved text and clear contact buttons",m:20,d:"Done when: the approved text is on the page and the call, WhatsApp and form buttons are clear."},
+{t:"Update, then ask Perplexity to check the live page",m:10,d:"Done when: the page is updated, you have sent the live link, and it is easy to use on a phone."}];
+const K='mq_'+TASK.id.toLowerCase(),S=JSON.parse(localStorage.getItem(K)||'{"done":[],"xp":0,"nt":"","dark":0,"blocked":{}}');
 const $=i=>document.getElementById(i),save=()=>localStorage.setItem(K,JSON.stringify(S));
 let left=0,tick=null,running=false,custom=null;
 const presets=[["Use step default",0],["5 min – tiny start",5],["10 min – big or unclear",10],["12 min – boring",12],["15 min – admin",15],["20 min – technical",20],["35 min – writing",35]];
@@ -55,11 +61,13 @@ function beep(){try{const c=new AudioContext(),o=c.createOscillator();o.frequenc
 function reset(){clearInterval(tick);running=false;if(cur()>=0){left=mins()*60;render()}}
 function render(){
 document.documentElement.dataset.t=S.dark?'dark':'light';
+$('mid').textContent=TASK.id;$('mws').textContent=TASK.ws;$('mti').textContent=TASK.title;$('mpr').textContent=TASK.prereq;$('fh').textContent=TASK.id+' complete';$('fp').textContent=TASK.finish;
+$('cn').textContent=COMPLETED.length+' of '+CORE_TOTAL+' core tasks done';$('cl').innerHTML=COMPLETED.map(x=>`<li class="done"><span class="chk">✓</span>${x.id}. ${x.t}</li>`).join('');
 const c=cur(),n=S.done.length;$('pb').style.width=n/steps.length*100+'%';
 $('pt').textContent=n+' of '+steps.length+' steps done';$('xp').textContent=S.xp+' XP';
 $('ls').innerHTML=steps.map((s,i)=>`<li class="${S.done.includes(i)?'done':''} ${i===c?'cur':''}"><span class="chk">${S.done.includes(i)?'✓':''}</span>${i+1}. ${s.t}</li>`).join('');
 $('fin').classList.toggle('hide',c>=0);$('nt').value=S.nt||'';
-if(c<0){$('now').innerHTML='<h2>All steps finished</h2><p class="mu">Nice work. Send the live link and tick the release gate.</p><div class="row"><button id="rs">Start over</button></div>';$('rs').onclick=()=>{S.done=[];save();reset()};return}
+if(c<0){$('now').innerHTML='<h2>All steps finished</h2><p class="mu">Nice work. Send the live link.</p><div class="row"><button id="rs">Start over</button></div>';$('rs').onclick=()=>{S.done=[];save();reset()};return}
 const s=steps[c];
 $('now').innerHTML=`<small>NEXT ACTION · STEP ${c+1} OF ${steps.length}</small><h2 style="font-size:20px">${s.t}</h2><p class="mu">${s.d}</p>
 <div class="timer" id="tm">${fmt(left)}</div>
@@ -67,7 +75,7 @@ $('now').innerHTML=`<small>NEXT ACTION · STEP ${c+1} OF ${steps.length}</small>
 <div class="row"><button id="dn">Mark done</button><button id="bl">I'm blocked</button></div><p class="mu" id="bm"></p>`;
 $('go').onclick=()=>{if(running){clearInterval(tick);running=false;render()}else{running=true;render();tick=setInterval(()=>{left--;$('tm').textContent=fmt(left);if(left<=0){clearInterval(tick);running=false;beep();$('go').textContent='Time up';$('bm').textContent='Time is up. Finish the sentence you are on, then mark done or start another 5 minutes.';left=300}},1000)}};
 $('dn').onclick=()=>{S.done.push(c);S.xp+=10+s.m;save();clearInterval(tick);running=false;custom=null;$('pre').value=0;reset()};
-$('bl').onclick=()=>{$('bm').textContent=s.t.includes('cut-off')?'Blocked? Write only the first sentence of the answer, then stop. Missing policy wording? Mark it and ask Andrew.':'Blocked? Shrink it: do only the first 5 minutes of this step, or write down exactly what is missing.';custom=5;$('pre').value=5;if(!running){left=300;$('tm').textContent=fmt(left)}};
+$('bl').onclick=()=>{$('bm').textContent=s.t.includes('promise')?'Blocked? Check one price or promise only, then stop. Not sure it is true? Mark it and ask Andrew.':'Blocked? Shrink it: do only the first 5 minutes of this step, or write down exactly what is missing.';custom=5;$('pre').value=5;if(!running){left=300;$('tm').textContent=fmt(left)}};
 }
 $('th').onclick=()=>{S.dark=S.dark?0:1;save();render()};
 $('nt').oninput=e=>{S.nt=e.target.value;save()};
