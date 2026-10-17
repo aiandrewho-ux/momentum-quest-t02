@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Momentum Quest – T04</title>
+<title>Momentum Quest – T05</title>
 <style>
 :root{--bg:#f7f6f2;--sf:#fff;--tx:#28251d;--mu:#6b6a65;--ac:#01696f;--ac2:#0c4e54;--bd:#e0ddd6;--ok:#437a22}
 [data-t=dark]{--bg:#171614;--sf:#1f1e1c;--tx:#e6e5e2;--mu:#9a9993;--ac:#4f98a3;--ac2:#6bb0ba;--bd:#33322f;--ok:#6daa45}
@@ -37,17 +37,17 @@ h2{font-size:16px;margin-bottom:6px}.hide{display:none}
 <div class="card"><h2>Your tweaks</h2><textarea id="nt" rows="3" placeholder="What felt too long, too big or too boring? Paste it to Perplexity to improve this app."></textarea></div>
 </main>
 <script>
-const TASK={id:"T04",ws:"Core build",title:"Flagship conversion and copy",
-prereq:"Prerequisite: Backup + verified scope, pricing and proof. Priority: ASAP when prerequisites are met; no month or quarter release gate.",
-finish:"The page is accurate and easy to use on a phone. Update, then ask Perplexity to check the live page."};
-const COMPLETED=[{id:"T01",t:"Fresh baseline"},{id:"T02",t:"Finish flagship FAQ"},{id:"T03",t:"Approve and install schema"}];
+const TASK={id:"T05",ws:"Core build",title:"Build HDB page",
+prereq:"Prerequisite: Approved core layout + distinct HDB research and facts. Priority: ASAP when prerequisites are met; no month or quarter release gate.",
+finish:"The HDB page answers HDB needs, not just a renamed copy. Publish after approval and send the link."};
+const COMPLETED=[{id:"T01",t:"Fresh baseline"},{id:"T02",t:"Finish flagship FAQ"},{id:"T03",t:"Approve and install schema"},{id:"T04",t:"Flagship conversion and copy"}];
 const CORE_TOTAL=50;
 const steps=[
-{t:"Make a backup first",m:10,d:"Done when: a backup of the money page exists and you know where to restore it from."},
-{t:"Ask Claude to tidy your page using your real prices, services and photos",m:20,d:"Done when: Claude's tidied draft uses only your real prices, services and photos."},
-{t:"Check every promise yourself",m:20,d:"Done when: every price, service and promise on the draft is true and you have ticked it off."},
-{t:"Add the approved text and clear contact buttons",m:20,d:"Done when: the approved text is on the page and the call, WhatsApp and form buttons are clear."},
-{t:"Update, then ask Perplexity to check the live page",m:10,d:"Done when: the page is updated, you have sent the live link, and it is easy to use on a phone."}];
+{t:"Ask Perplexity for an HDB page brief",m:10,d:"Done when: you have the HDB page brief from Perplexity."},
+{t:"Give Claude the brief and your real HDB job details",m:20,d:"Done when: Claude has the brief plus your real HDB jobs, prices and photos, and has written a draft."},
+{t:"Review Claude's draft",m:20,d:"Done when: every HDB fact, price and promise in the draft is true and you have approved or marked changes."},
+{t:"Build the page in Elementor",m:35,d:"Done when: the money page layout is copied, the HDB draft and photos replace the content, and links to the money page are added."},
+{t:"Publish after approval and send the link",m:10,d:"Done when: the HDB page is live and you have sent the link to Perplexity."}];
 const K='mq_'+TASK.id.toLowerCase(),S=JSON.parse(localStorage.getItem(K)||'{"done":[],"xp":0,"nt":"","dark":0,"blocked":{}}');
 const $=i=>document.getElementById(i),save=()=>localStorage.setItem(K,JSON.stringify(S));
 let left=0,tick=null,running=false,custom=null;
@@ -75,7 +75,7 @@ $('now').innerHTML=`<small>NEXT ACTION · STEP ${c+1} OF ${steps.length}</small>
 <div class="row"><button id="dn">Mark done</button><button id="bl">I'm blocked</button></div><p class="mu" id="bm"></p>`;
 $('go').onclick=()=>{if(running){clearInterval(tick);running=false;render()}else{running=true;render();tick=setInterval(()=>{left--;$('tm').textContent=fmt(left);if(left<=0){clearInterval(tick);running=false;beep();$('go').textContent='Time up';$('bm').textContent='Time is up. Finish the sentence you are on, then mark done or start another 5 minutes.';left=300}},1000)}};
 $('dn').onclick=()=>{S.done.push(c);S.xp+=10+s.m;save();clearInterval(tick);running=false;custom=null;$('pre').value=0;reset()};
-$('bl').onclick=()=>{$('bm').textContent=s.t.includes('promise')?'Blocked? Check one price or promise only, then stop. Not sure it is true? Mark it and ask Andrew.':'Blocked? Shrink it: do only the first 5 minutes of this step, or write down exactly what is missing.';custom=5;$('pre').value=5;if(!running){left=300;$('tm').textContent=fmt(left)}};
+$('bl').onclick=()=>{$('bm').textContent=s.t.includes('Review')?'Blocked? Check one price or promise only, then stop. Not sure it is true? Mark it and ask Andrew.':'Blocked? Shrink it: do only the first 5 minutes of this step, or write down exactly what is missing.';custom=5;$('pre').value=5;if(!running){left=300;$('tm').textContent=fmt(left)}};
 }
 $('th').onclick=()=>{S.dark=S.dark?0:1;save();render()};
 $('nt').oninput=e=>{S.nt=e.target.value;save()};
