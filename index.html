@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Momentum Quest – T05</title>
+<title>Momentum Quest – T06</title>
 <style>
 :root{--bg:#f7f6f2;--sf:#fff;--tx:#28251d;--mu:#6b6a65;--ac:#01696f;--ac2:#0c4e54;--bd:#e0ddd6;--ok:#437a22}
 [data-t=dark]{--bg:#171614;--sf:#1f1e1c;--tx:#e6e5e2;--mu:#9a9993;--ac:#4f98a3;--ac2:#6bb0ba;--bd:#33322f;--ok:#6daa45}
@@ -37,17 +37,18 @@ h2{font-size:16px;margin-bottom:6px}.hide{display:none}
 <div class="card"><h2>Your tweaks</h2><textarea id="nt" rows="3" placeholder="What felt too long, too big or too boring? Paste it to Perplexity to improve this app."></textarea></div>
 </main>
 <script>
-const TASK={id:"T05",ws:"Core build",title:"Build HDB page",
-prereq:"Prerequisite: Approved core layout + distinct HDB research and facts. Priority: ASAP when prerequisites are met; no month or quarter release gate.",
-finish:"The HDB page answers HDB needs, not just a renamed copy. Publish after approval and send the link."};
-const COMPLETED=[{id:"T01",t:"Fresh baseline"},{id:"T02",t:"Finish flagship FAQ"},{id:"T03",t:"Approve and install schema"},{id:"T04",t:"Flagship conversion and copy"}];
+const TASK={id:"T06",ws:"Core build",title:"Build condo and landed pages",
+prereq:"Prerequisite: Approved HDB page layout + separate condo and landed briefs and real examples. Priority: ASAP when prerequisites are met; no month or quarter release gate.",
+finish:"Each page has its own useful advice and works on mobile. Publish the approved pages and send both links."};
+const COMPLETED=[{id:"T01",t:"Fresh baseline"},{id:"T02",t:"Finish flagship FAQ"},{id:"T03",t:"Approve and install schema"},{id:"T04",t:"Flagship conversion and copy"},{id:"T05",t:"Build HDB page"}];
 const CORE_TOTAL=50;
 const steps=[
-{t:"Ask Perplexity for an HDB page brief",m:10,d:"Done when: you have the HDB page brief from Perplexity."},
-{t:"Give Claude the brief and your real HDB job details",m:20,d:"Done when: Claude has the brief plus your real HDB jobs, prices and photos, and has written a draft."},
-{t:"Review Claude's draft",m:20,d:"Done when: every HDB fact, price and promise in the draft is true and you have approved or marked changes."},
-{t:"Build the page in Elementor",m:35,d:"Done when: the money page layout is copied, the HDB draft and photos replace the content, and links to the money page are added."},
-{t:"Publish after approval and send the link",m:10,d:"Done when: the HDB page is live and you have sent the link to Perplexity."}];
+{t:"Ask Perplexity for separate condo and landed briefs",m:15,d:"Done when: you have one brief for the condo page and one for the landed page."},
+{t:"Give Claude your real examples and the briefs",m:20,d:"Done when: Claude has both briefs plus your real condo and landed jobs, prices and photos, and has written drafts."},
+{t:"Check each draft",m:25,d:"Done when: every fact, price and promise in both drafts is true and you have approved or marked changes."},
+{t:"Build both pages with your layout and different content and photos",m:40,d:"Done when: each page uses your page layout but has its own useful content and photos."},
+{t:"Add links between the relevant pages",m:10,d:"Done when: the condo, landed, HDB and money pages link to each other where it helps the reader."},
+{t:"Publish the approved pages and send both links",m:10,d:"Done when: both pages are live and you have sent both links to Perplexity."}];
 const K='mq_'+TASK.id.toLowerCase(),S=JSON.parse(localStorage.getItem(K)||'{"done":[],"xp":0,"nt":"","dark":0,"blocked":{}}');
 const $=i=>document.getElementById(i),save=()=>localStorage.setItem(K,JSON.stringify(S));
 let left=0,tick=null,running=false,custom=null;
